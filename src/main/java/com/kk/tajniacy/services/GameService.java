@@ -5,15 +5,15 @@ import com.kk.tajniacy.model.Color;
 import com.kk.tajniacy.model.Game;
 import com.kk.tajniacy.model.Tile;
 import com.kk.tajniacy.persistance.GameRepository;
-import com.kk.tajniacy.persistance.TileRepository;
 import com.kk.tajniacy.utils.Words;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -21,6 +21,11 @@ import java.util.stream.Collectors;
 public class GameService {
 
     private final GameRepository gameRepository;
+
+    @PostConstruct
+    public void init() {
+        startNewGame();
+    }
 
     public Game save(Game game) {
         return gameRepository.save(game);
@@ -63,7 +68,11 @@ public class GameService {
         }
 
         Collections.shuffle(tiles);
-        Game newGame = Game.builder().name("asd").tiles(tiles).startingColor(starting).build();
+        Game newGame = Game.builder()
+                .name(UUID.randomUUID().toString())
+                .tiles(tiles)
+                .startingColor(starting)
+                .build();
         tiles.forEach(tile -> tile.setGame(newGame));
         return gameRepository.save(newGame);
     }
