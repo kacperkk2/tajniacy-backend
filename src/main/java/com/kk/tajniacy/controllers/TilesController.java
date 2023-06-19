@@ -1,8 +1,10 @@
 package com.kk.tajniacy.controllers;
 
 import com.kk.tajniacy.dto.RoundDto;
+import com.kk.tajniacy.dto.WordsDto;
 import com.kk.tajniacy.model.Game;
 import com.kk.tajniacy.model.Tile;
+import com.kk.tajniacy.model.Word;
 import com.kk.tajniacy.services.GameService;
 import com.kk.tajniacy.services.TileService;
 import lombok.RequiredArgsConstructor;
@@ -36,5 +38,20 @@ public class TilesController {
     @PostMapping("/tiles")
     public void pickTile(@RequestParam String tileName) {
         tileService.pickTile(tileName);
+    }
+
+    @PostMapping("/words")
+    public void setWords(@RequestBody WordsDto wordsDto) {
+        gameService.setWords(wordsDto);
+    }
+
+    @GetMapping("/words")
+    public WordsDto getAllWords() {
+        return gameService.getAllWords();
+    }
+
+    @PostMapping("/words/reset")
+    public void resetWords() {
+        gameService.resetWords();
     }
 }

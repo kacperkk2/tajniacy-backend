@@ -1,9 +1,11 @@
 package com.kk.tajniacy.services;
 
 import com.kk.tajniacy.dto.RoundDto;
+import com.kk.tajniacy.dto.WordsDto;
 import com.kk.tajniacy.model.Color;
 import com.kk.tajniacy.model.Game;
 import com.kk.tajniacy.model.Tile;
+import com.kk.tajniacy.model.Word;
 import com.kk.tajniacy.persistance.GameRepository;
 import com.kk.tajniacy.utils.Words;
 import jakarta.annotation.PostConstruct;
@@ -21,10 +23,19 @@ import java.util.stream.Collectors;
 public class GameService {
 
     private final GameRepository gameRepository;
+    private List<Word> words;
 
     @PostConstruct
     public void init() {
+        initWords();
         startNewGame();
+    }
+
+    private void initWords() {
+        words = new ArrayList<>();
+        Words.starterWords.forEach(word -> words.add(
+                Word.builder().word(word).inUse(true).build())
+        );
     }
 
     public Game save(Game game) {
@@ -55,7 +66,7 @@ public class GameService {
         }
         Color second = starting == Color.RED ? Color.BLUE : Color.RED;
 
-        List<String> words = new ArrayList<>(Words.words);
+        List<String> words = getWordsInUse();
         Collections.shuffle(words);
         List<Tile> tiles = words.subList(0, 25)
                 .stream()
@@ -77,6 +88,27 @@ public class GameService {
         return gameRepository.save(newGame);
     }
 
+    public void resetWords() {
+        initWords();
+    }
+
+    public WordsDto getAllWords() {
+        WordsDto wordsDto = new WordsDto();
+        wordsDto.setWords(words);
+        return wordsDto;
+    }
+
+    public void setWords(WordsDto wordsDto) {
+        this.words = wordsDto.getWords();
+    }
+
+    private List<String> getWordsInUse() {
+        return words.stream()
+                .filter(Word::isInUse)
+                .map(Word::getWord)
+                .collect(Collectors.toList());
+    }
+
     private Color getColor(int count, Color starting, Color second) {
         if (count < 9) {
             return starting;
@@ -91,5 +123,4 @@ public class GameService {
             return Color.BLANK;
         }
     }
-
 }
