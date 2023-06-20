@@ -4,7 +4,6 @@ import com.kk.tajniacy.dto.RoundDto;
 import com.kk.tajniacy.dto.WordsDto;
 import com.kk.tajniacy.model.Game;
 import com.kk.tajniacy.model.Tile;
-import com.kk.tajniacy.model.Word;
 import com.kk.tajniacy.services.GameService;
 import com.kk.tajniacy.services.TileService;
 import lombok.RequiredArgsConstructor;
